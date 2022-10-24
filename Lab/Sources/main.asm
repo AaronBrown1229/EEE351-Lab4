@@ -69,8 +69,8 @@ afterswap   cmpa #$FF
 swap:
             stab 1,y+
             staa 0,y
-            ldaa #01
-            staa Swapped
+            ldab #01
+            stab Swapped            
             bsr  afterswap
             
 notswap:
