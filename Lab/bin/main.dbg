@@ -5492,42 +5492,51 @@ NewList	    DC.B 71, 87, 87, 11, 51, 67, 41, 100
 
 Entry:
             ; start up stuff
-loop        ldx  #StartROM
+            ; will put all numbers into RAM for us to milipulate
+            ldx  #StartROM
             ldy  #StartRAM
+startloop   ldaa 1,x+
+            staa 1,y+
+            cmpa #$FF
+            bne  startloop    
+            
+                   
+loop        ldy  #StartRAM
             
             ; program stuff  
               ; for each pair of bits check if in right order
-for         ldaa 1,x+
-            ldab 0,x
+for         ldaa 1,y+
+            ldab 0,y
+            
+            cmpb #$FF
+            beq skip
+            
             cba
             ;if not swaped increment y and store values
             bgt  swap
-            ble  notswap
-afterswap   cmpa #$FF
-            bne  for
+                       
+afterswap   bsr for
+            
                 ;if not right order go to subroutine swap
                 ;set swap bit to true
                 
             ; check if swap bit is true
-            ldab Swapped  ;temp hold of swapped bit
-            cmpb #01
+skip        ldaa Swapped  ;temp hold of swapped bit
+            cmpa #01
             ; set swap bit to false
-            ldab #00
-            stab Swapped
+            ldaa #00
+            staa Swapped
             beq  loop
                 
 
 swap:
+            dey
             stab 1,y+
             staa 0,y
-            ldab #01
-            stab Swapped            
+            ldaa #01
+            staa Swapped            
             bsr  afterswap
-            
-notswap:
-            staa 1,y+
-            stab 0,y
-            bsr  afterswap
+            rts           
             
 
 ;**************************************************************
