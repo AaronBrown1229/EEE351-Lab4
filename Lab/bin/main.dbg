@@ -5487,20 +5487,26 @@ NewList	    DC.B 71, 87, 87, 11, 51, 67, 41, 100
 	          DC.B 99, 92, 54, 56, 64, 2, 51, 9
 	          DC.B $FF	
 
+;HexList     DC.B $32, $15, $EB, $07, $E6, $FA, $F5, $84
+;            DC.B $84, $89, $78, $0F, $EE, $EF, $12, $93
+;            DC.B $34, $91, $DA, $11, $FC, $32, $F3, $A2
+;            DC.B $FF
+
 ; code section
             ORG   Program
 
 Entry:
             ; start up stuff
-            ; will put all numbers into RAM for us to milipulate
             ldx  #StartROM
             ldy  #StartRAM
+            
+            ; loads all the numbers into RAM
 startloop   ldaa 1,x+
             staa 1,y+
             cmpa #$FF
             bne  startloop    
-            
-                   
+                        
+            ;loop is used to sort  
 loop        ldy  #StartRAM
             
             ; program stuff  
@@ -5513,9 +5519,10 @@ for         ldaa 1,y+
             
             cba
             ;if not swaped increment y and store values
-            bgt  swap
+            ;compares singed values need to compare unsinged values!!!!!!!!!!!!!!!!!!!!!!
+            bhs  swap
                        
-afterswap   bsr for
+afterswap   bra for
             
                 ;if not right order go to subroutine swap
                 ;set swap bit to true

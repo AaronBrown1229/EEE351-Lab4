@@ -1,13 +1,16 @@
-; fix title
-;*****************************************************************
-;* This stationery serves as the framework for a                 *
-;* user application (single file, absolute assembly application) *
-;* For a more comprehensive program that                         *
-;* demonstrates the more advanced functionality of this          *
-;* processor, please see the demonstration applications          *
-;* located in the examples subdirectory of the                   *
-;* Freescale CodeWarrior for the HC12 Program directory          *
-;*****************************************************************
+;********************************************************************************
+;*
+;* File: main.asm
+;*
+;* Author: OCdt Brown & OCdt Gillingham
+;*
+;* Description: This is a file for sorting an array of integers. The integers
+;*              are already placed into ROM. It will check for an array terminator
+;*              symbol of $FF. If not at end of array will call swap. By looping
+;*              through this process untill no swaps occure a bubble sort algo
+;*              will be compleated.
+;*
+;********************************************************************************
 
 ; export symbols
             XDEF Entry            ; export 'Entry' symbol
@@ -30,29 +33,35 @@ Swapped     EQU  $BFFF  ; will store if a swap occured
 
             ORG StartROM ;where the unsorted list is stored
            
-            ;thise are dec numbers will show up as hex in debugger
+            ;thise are dec numbers
 NewList	    DC.B 71, 87, 87, 11, 51, 67, 41, 100
 	          DC.B 51, 0 , 77, 52, 11, 14, 55, 56
 	          DC.B 99, 92, 54, 56, 64, 2, 51, 9
 	          DC.B $FF	
+
+;second test
+;HexList     DC.B $32, $15, $EB, $07, $E6, $FA, $F5, $84
+;            DC.B $84, $89, $78, $0F, $EE, $EF, $12, $93
+;            DC.B $34, $91, $DA, $11, $FC, $32, $F3, $A2
+;            DC.B $FF
 
 ; code section
             ORG   Program
 
 Entry:
             ; start up stuff
-            ; will put all numbers into RAM for us to milipulate
             ldx  #StartROM
             ldy  #StartRAM
+            
+            ; loads all the numbers into RAM
 startloop   ldaa 1,x+
             staa 1,y+
             cmpa #$FF
             bne  startloop    
-            
-                   
+                        
+            ;loop is used to sort  
 loop        ldy  #StartRAM
-            
-            ; program stuff  
+  
               ; for each pair of bits check if in right order
 for         ldaa 1,y+
             ldab 0,y
@@ -62,9 +71,10 @@ for         ldaa 1,y+
             
             cba
             ;if not swaped increment y and store values
-            bgt  swap
+            ;compares singed values need to compare unsinged values!!!!!!!!!!!!!!!!!!!!!!
+            bhs  swap
                        
-afterswap   bsr for
+afterswap   bra for
             
                 ;if not right order go to subroutine swap
                 ;set swap bit to true
@@ -77,7 +87,21 @@ skip        ldaa Swapped  ;temp hold of swapped bit
             staa Swapped
             beq  loop
                 
-
+;********************************************************************************
+;*
+;* Subroutine: Decrypt
+;*
+;* Description: This subroutine is where the algo will swap the order the numbers
+;*              are stored in memory.
+;*
+;* Inputs: A -  contains the value that needs to be stored second
+;*         B -  contains the value that needs to be stored first
+;*         IY - contains the address to store the values in A and B
+;*
+;* Outputs: None
+;*
+;* Subroutines: None
+;********************************************************************************                 
 swap:
             dey
             stab 1,y+
