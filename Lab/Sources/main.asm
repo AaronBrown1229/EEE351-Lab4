@@ -62,24 +62,23 @@ startloop   ldaa 1,x+
             ;loop is used to sort  
 loop        ldy  #StartRAM
   
-              ; for each pair of bits check if in right order
+            ; for each pair of bits check if in right order
 for         ldaa 1,y+
             ldab 0,y
             
+            ;if at end of list end for loop
             cmpb #$FF
             beq skip
             
+            ;if b is greater than a branch to swap
             cba
-            ;if not swaped increment y and store values
-            ;compares singed values need to compare unsinged values!!!!!!!!!!!!!!!!!!!!!!
-            bhs  swap
-                       
-afterswap   bra for
+            bhi  swap
             
-                ;if not right order go to subroutine swap
-                ;set swap bit to true
-                
-            ; check if swap bit is true
+            ;run for again           
+afterswap   bra for
+
+            ;after null terminator is reached store null and
+            ;check if a swap occured, if so loop again
 skip        ldaa Swapped  ;temp hold of swapped bit
             cmpa #01
             ; set swap bit to false
