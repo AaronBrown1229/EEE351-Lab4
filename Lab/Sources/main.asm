@@ -45,6 +45,8 @@ NewList	    DC.B 71, 87, 87, 11, 51, 67, 41, 100
 ;            DC.B $34, $91, $DA, $11, $FC, $32, $F3, $A2
 ;            DC.B $FF
 
+;Empty       DC.B $FF
+
 ; code section
             ORG   Program
 
