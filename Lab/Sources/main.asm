@@ -34,10 +34,10 @@ Swapped     EQU  $BFFF  ; will store if a swap occured
             ORG StartROM ;where the unsorted list is stored
            
             ;thise are dec numbers
-NewList	    DC.B 71, 87, 87, 11, 51, 67, 41, 100
-	          DC.B 51, 0 , 77, 52, 11, 14, 55, 56
-	          DC.B 99, 92, 54, 56, 64, 2, 51, 9
-	          DC.B $FF	
+;NewList	    DC.B 71, 87, 87, 11, 51, 67, 41, 100
+;	          DC.B 51, 0 , 77, 52, 11, 14, 55, 56
+;	          DC.B 99, 92, 54, 56, 64, 2, 51, 9
+;	          DC.B $FF	
 
 ;second test
 ;HexList     DC.B $32, $15, $EB, $07, $E6, $FA, $F5, $84
@@ -45,7 +45,7 @@ NewList	    DC.B 71, 87, 87, 11, 51, 67, 41, 100
 ;            DC.B $34, $91, $DA, $11, $FC, $32, $F3, $A2
 ;            DC.B $FF
 
-;Empty       DC.B $FF
+Empty       DC.B $FF
 
 ; code section
             ORG   Program
@@ -62,10 +62,16 @@ startloop   ldaa 1,x+
             bne  startloop    
                         
             ;loop is used to sort  
-loop        ldy  #StartRAM
+loop        ldy  #StartRAM   
+            
+            ldaa 0,y
+            cmpa #$FF
+            beq  end
+            
   
-            ; for each pair of bits check if in right order
+            ;for each pair of bits check if in right order
 for         ldaa 1,y+
+            
             ldab 0,y
             
             ;if at end of list end for loop
@@ -87,6 +93,9 @@ skip        ldaa Swapped  ;temp hold of swapped bit
             ldaa #00
             staa Swapped
             beq  loop
+            
+end         BGND
+            BGND
                 
 ;********************************************************************************
 ;*
